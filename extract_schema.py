@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 import re
 import sys
-
+#For LLM prompting
 def extract_schema_from_full_sql(input_file, output_file):
-    """
-    Extract just the CREATE TABLE statements and sample INSERT statements
-    from the full SQL script
-    """
     try:
         with open(input_file, 'r') as f:
             full_sql = f.read()
