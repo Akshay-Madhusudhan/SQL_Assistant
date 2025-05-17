@@ -1,0 +1,201 @@
+CREATE TABLE Preliminary(
+    as_of_year text,
+    respondent_id text,
+    agency_name text,
+    agency_abbr text,
+    agency_code text,
+    loan_type_name text,
+    loan_type text,
+    property_type_name text,
+    property_type int,
+    loan_purpose_name text,
+    loan_purpose text,
+    owner_occupancy_name text,
+    owner_occupancy text,
+    loan_amount_000s text,
+    preapproval_name text,
+    preapproval text,
+    action_taken_name text,
+    action_taken text,
+    msamd_name text,
+    msamd text,
+    state_name text,
+    state_abbr text,
+    state_code text,
+    county_name text,
+    county_code text,
+    census_tract_number text,
+    applicant_ethnicity_name text,
+    applicant_ethnicity text,
+    co_applicant_ethnicity_name text,
+    co_applicant_ethnicity text,
+    applicant_race_name_1 text,
+    applicant_race_1 text,
+    applicant_race_name_2 text,
+    applicant_race_2 text,
+    applicant_race_name_3 text,
+    applicant_race_3 text,
+    applicant_race_name_4 text,
+    applicant_race_4 text,
+    applicant_race_name_5 text,
+    applicant_race_5 text,
+    co_applicant_race_name_1 text,
+    co_applicant_race_1 text,
+    co_applicant_race_name_2 text,
+    co_applicant_race_2 text,
+    co_applicant_race_name_3 text,
+    co_applicant_race_3 text,
+    co_applicant_race_name_4 text,
+    co_applicant_race_4 text,
+    co_applicant_race_name_5 text,
+    co_applicant_race_5 text,
+    applicant_sex_name text,
+    applicant_sex text,
+    co_applicant_sex_name text,
+    co_applicant_sex text,
+    applicant_income_000s text,
+    purchaser_type_name text,
+    purchaser_type text,
+    denial_reason_name_1 text,
+    denial_reason_1 text,
+    denial_reason_name_2 text,
+    denial_reason_2 text,
+    denial_reason_name_3 text,
+    denial_reason_3 text,
+    rate_spread text,
+    hoepa_status_name text,
+    hoepa_status text,
+    lien_status_name text,
+    lien_status text,
+    edit_status_name text,
+    edit_status text,
+    sequence_number text,
+    population text,
+    minority_population text,
+    hud_median_family_income text,
+    tract_to_msamd_income text,
+    number_of_owner_occupied_units text,
+    number_of_1_to_4_family_units text,
+    application_date_indicator text
+);
+
+
+-- LOOKUP TABLES
+
+CREATE TABLE Race(
+    race_num INT PRIMARY KEY,
+    race_name TEXT
+);
+
+CREATE TABLE Ethnicity(
+    ethnicity_num INT PRIMARY KEY,
+    ethnicity_name TEXT
+);
+
+CREATE TABLE Sex(
+    sex_num INT PRIMARY KEY,
+    sex_name TEXT
+);
+
+CREATE TABLE PropertyType(
+    property_type INT PRIMARY KEY,
+    property_type_name TEXT
+);
+
+CREATE TABLE OwnerOccupancy(
+    owner_occupancy INT PRIMARY KEY,
+    owner_occupancy_name TEXT
+);
+
+CREATE TABLE Agency(
+    agency_code INT PRIMARY KEY,
+    agency_name TEXT,
+    agency_abbr TEXT
+);
+
+CREATE TABLE PurchaserType(
+    purchaser_type INT PRIMARY KEY,
+    purchaser_type_name TEXT
+);
+
+CREATE TABLE LienStatus(
+    lien_status INT PRIMARY KEY,
+    lien_status_name TEXT
+);
+
+CREATE TABLE LoanType(
+    loan_type INT PRIMARY KEY,
+    loan_type_name TEXT
+);
+
+CREATE TABLE LoanPurpose(
+    loan_purpose INT PRIMARY KEY,
+    loan_purpose_name TEXT
+);
+
+CREATE TABLE Preapproval(
+    preapproval INT PRIMARY KEY,
+    preapproval_name TEXT
+);
+
+CREATE TABLE ActionTaken(
+    action_taken INT PRIMARY KEY,
+    action_taken_name TEXT
+);
+
+CREATE TABLE DenialReason(
+    denial_reason INT PRIMARY KEY,
+    denial_reason_name TEXT
+);
+
+CREATE TABLE HOEPAStatus(
+    hoepa_status INT PRIMARY KEY,
+    hoepa_status_name TEXT
+);
+
+CREATE TABLE STATE(
+    state_code INT PRIMARY KEY,
+    state_name TEXT,
+    state_abbr TEXT
+);
+
+CREATE TABLE COUNTY(
+    county_code INT PRIMARY KEY,
+    state_code INT,
+    county_name TEXT,
+    FOREIGN KEY (state_code) REFERENCES STATE(state_code)
+);
+
+CREATE TABLE MSAMD(
+    msamd INT PRIMARY KEY,
+    msamd_name TEXT
+);
+
+-- 1NF TABLES OF APPLICANT RACE, CO_APPLICANT RACE, AND DENIAL REASONS
+
+CREATE TABLE Races(
+    id INT,
+    race_num INT,
+    num_of_race INT, -- Sequence (1, 2, 3, 4, 5)
+    CONSTRAINT Races_PK PRIMARY KEY (id, num_of_race), 
+    FOREIGN KEY (id) REFERENCES preliminary(ID),      
+    FOREIGN KEY (race_num) REFERENCES Race(race_num)   
+);
+
+CREATE TABLE Co_Races(
+    id INT,
+    co_race_num INT,
+    co_num_race INT, -- Sequence (1, 2, 3, 4, 5)
+    CONSTRAINT Co_Races_PK PRIMARY KEY (id, co_num_race), 
+    FOREIGN KEY (id) REFERENCES preliminary(ID),         
+    FOREIGN KEY (co_race_num) REFERENCES Race(race_num)  
+);
+
+CREATE TABLE Denials(
+    id INT,
+    denial_reason INT,
+    denial_num INT, -- Sequence (1, 2, 3)
+    CONSTRAINT Denials_PK PRIMARY KEY (id, denial_num),           
+    FOREIGN KEY (id) REFERENCES preliminary(ID),                  
+    FOREIGN KEY (denial_reason) REFERENCES DenialReason(denial_reason)
+);
