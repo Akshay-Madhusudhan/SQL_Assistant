@@ -19,12 +19,11 @@ MODEL_NAME = "mistral-7b-instruct-v0.1.Q4_0.gguf"
 # "Phi-3.5-mini-instruct-Q4_K_M.gguf"
 
 
-# ILAB connection details
-ILAB_HOST = "ilab1.cs.rutgers.edu"
-REMOTE_SCRIPT_PATH = "/common/home/am3197/Downloads/ilab_script.py"  # Path to the script on ILAB
+# ILAB connection details, change based on VM you want to SSH into
+ILAB_HOST = "vm host name"
+REMOTE_SCRIPT_PATH = "path_to_vm_script/ilab_script.py"  # Path to the script on your vm (in this case ILAB)
 
 def load_schema():
-    """Load the database schema from file"""
     try:
         with open(SCHEMA_FILE, 'r') as f:
             return f.read()
@@ -33,7 +32,6 @@ def load_schema():
         sys.exit(1)
 
 def extract_table_info(schema):
-    """Extract table names and their columns from the schema"""
     tables = {}
     current_table = None
     
@@ -67,7 +65,6 @@ def extract_table_info(schema):
     return tables
 
 def setup_llm():
-    """Initialize the GPT4ALL model"""
     try:
         # Make MODEL_NAME accessible for modification
         global MODEL_NAME
@@ -140,7 +137,6 @@ def setup_llm():
         sys.exit(1)
 
 def create_prompt(schema, question):
-    """Create a prompt for the LLM based on the schema and user question"""
     return f"""
 ## Database Schema:
 ```sql
@@ -160,7 +156,6 @@ Provide a correct and valid sql query:
 """
 
 def extract_sql_query(llm_response):
-    """Extract just the SQL query from the LLM response"""
     # Attempt to extract query with better pattern matching
     # Look for SQL patterns like SELECT, FROM, etc.
     sql_pattern = r"(?:SELECT|WITH|WITH\s+RECURSIVE)[^;]*(?:;)?"
@@ -179,7 +174,6 @@ def extract_sql_query(llm_response):
     return cleaned.strip()
 
 def connect_to_ilab(username, password):
-    """Establish SSH connection to ILAB"""
     try:
         # Create SSH client
         client = paramiko.SSHClient()
@@ -199,7 +193,6 @@ def connect_to_ilab(username, password):
         return None
 
 def execute_query_on_ilab(ssh_client, query):
-    """Execute SQL query on ILAB and return results"""
     try:
         print(query)
         # Execute the remote script with the query
